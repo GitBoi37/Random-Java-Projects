@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
-public class VSMain extends JPanel implements Runnable{
+public class insertionMain extends JPanel implements Runnable{
     /**
      * 
      */
@@ -17,7 +17,7 @@ public class VSMain extends JPanel implements Runnable{
     private int biggest = 0;
     private int bI = 0;
     private int index = 0;
-    public VSMain() {
+    public insertionMain() {
         super();
         setBackground(Color.BLACK);
         setFocusable(true);
