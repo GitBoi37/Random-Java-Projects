@@ -10,6 +10,7 @@ public class VSMain extends JPanel implements Runnable{
     /**
      * 
      */
+    private ArrayList<actionObject> actionList = new ArrayList<actionObject>();
     private static final long serialVersionUID = 1L;
     private Thread animator;
     private final int DELAY = 100;
@@ -32,15 +33,6 @@ public class VSMain extends JPanel implements Runnable{
         
         setPreferredSize(d);
     }
-    public int findBig(int[] e, int top) {
-        int b = Integer.MIN_VALUE;
-        for(int i = 0; i < top; i++) {
-            if(b < e[i]) {
-                b = e[i];
-            }
-        }
-        return b;
-    }
     
     @Override
     public void paintComponent(Graphics g) {
@@ -51,7 +43,7 @@ public class VSMain extends JPanel implements Runnable{
         for(int i = 0; i < sorts.length; i++){
             g2d.drawRect(i*1 + 10, (int) (d.getHeight() - sorts[i] - 30), 1, sorts[i]);
         }
-        g2d.drawString("Number of numbers in sorting batch: " + sorts.length, 50, 50);
+        g2d.drawString("Numbers in sorting batch: " + sorts.length, 50, 50);
         
     }
     public int[] swap(int a, int b, int[] ee) {
