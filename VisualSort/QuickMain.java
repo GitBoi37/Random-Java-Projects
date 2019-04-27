@@ -1,5 +1,4 @@
 package sort;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -15,11 +14,12 @@ public class QuickMain extends JPanel implements Runnable{
     private static ArrayList<actionObject> actionList = new ArrayList<actionObject>();
     private static final long serialVersionUID = 1L;
     private Thread animator;
-    private final int DELAY = 5;
+    private final int DELAY = 1;
     private int[] sorts;
     private int[] display;
     private int index = 0;
     private int aI = 0;
+    private int swaps = 0;
     public QuickMain() {
         super();
         setBackground(Color.BLACK);
@@ -44,13 +44,13 @@ public class QuickMain extends JPanel implements Runnable{
             g2d.drawRect(i*1 + 10, (int) (d.getHeight() - display[i] - 30), 1, display[i]);
         }
         g2d.drawString("Numbers in sorting batch: " + sorts.length, 50, 50);
+        g2d.drawString("Swaps: " + swaps, 50, 75);
         
     }
-    public int[] swap(int[] ee, int a, int b) {
-        int temp = ee[a];
-        ee[a] = ee[b];
-        ee[b] = temp;
-        return ee;
+    public void swap(int a, int b) {
+        int temp = display[a];
+        display[a] = display[b];
+        display[b] = temp;
     }
     public void insertSort(){
         if(index < sorts.length){
@@ -112,8 +112,9 @@ public class QuickMain extends JPanel implements Runnable{
     		int temp = sorts[actionList.get(aI).swapA];
     		sorts[actionList.get(aI).swapA] = sorts[actionList.get(aI).swapB];
     		sorts[actionList.get(aI).swapB] = temp;*/
-    		display = swap(display, actionList.get(aI).swapA, actionList.get(aI).swapB);
+    		swap(actionList.get(aI).swapA, actionList.get(aI).swapB);
     		aI++;
+    		swaps++;
     	//}
     }
     @Override
