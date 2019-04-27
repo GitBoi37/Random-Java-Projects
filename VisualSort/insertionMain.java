@@ -52,7 +52,7 @@ public class insertionMain extends JPanel implements Runnable{
             g2d.drawRect(i*1 + 10, (int) (d.getHeight() - sorts[i] - 30), 1, sorts[i]);
         }
         g2d.drawString("Number of numbers in sorting batch: " + sorts.length, 50, 50);
-        
+        g2d.drawString("Swaps: " + swaps, 50, 75);
     }
     public int[] swap(int a, int b, int[] ee) {
         int temp = ee[a];
@@ -78,6 +78,7 @@ public class insertionMain extends JPanel implements Runnable{
                 if(sorts[i] > jeff){
                     sorts[index] = sorts[i];
                     sorts[i] = jeff;
+                    swaps++;
                 }
             }
             index++;
