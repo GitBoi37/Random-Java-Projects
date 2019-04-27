@@ -1,36 +1,36 @@
-package VisualSort;
+package sort;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
-public class VSMain extends JPanel implements Runnable{
+public class QuickMain extends JPanel implements Runnable{
     /**
      * 
      */
-    private ArrayList<actionObject> actionList = new ArrayList<actionObject>();
+    private static ArrayList<actionObject> actionList = new ArrayList<actionObject>();
     private static final long serialVersionUID = 1L;
     private Thread animator;
-    private final int DELAY = 100;
+    private final int DELAY = 5;
     private int[] sorts;
-    private int biggest = 0;
-    private int bI = 0;
+    private int[] display;
     private int index = 0;
-    public VSMain() {
+    private int aI = 0;
+    public QuickMain() {
         super();
         setBackground(Color.BLACK);
         setFocusable(true);
         Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         sorts = new int[(int)(d.getWidth()/(1.01))];
-        bI = sorts.length;
-        biggest = findBig(sorts, bI);
-        
         for(int i = 0; i < sorts.length; i++){
             sorts[i] = (int)(Math.random()*(d.getHeight()-50));
         }
-        
+        display = sorts.clone();
+        quickSort();
         setPreferredSize(d);
     }
     
@@ -40,28 +40,17 @@ public class VSMain extends JPanel implements Runnable{
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.WHITE);
         Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        for(int i = 0; i < sorts.length; i++){
-            g2d.drawRect(i*1 + 10, (int) (d.getHeight() - sorts[i] - 30), 1, sorts[i]);
+        for(int i = 0; i < display.length; i++){
+            g2d.drawRect(i*1 + 10, (int) (d.getHeight() - display[i] - 30), 1, display[i]);
         }
         g2d.drawString("Numbers in sorting batch: " + sorts.length, 50, 50);
         
     }
-    public int[] swap(int a, int b, int[] ee) {
+    public int[] swap(int[] ee, int a, int b) {
         int temp = ee[a];
         ee[a] = ee[b];
         ee[b] = temp;
         return ee;
-    }
-    public void cleanUp() {
-        if(sorts[bI - 1] == biggest) {
-            bI--;
-            biggest = findBig(sorts, bI);
-        }
-        for(int i = 0; i < bI - 1; i++) {
-            if(sorts[i] > sorts[i + 1]) {
-                sorts = swap(i, i + 1, sorts);
-            }
-        }
     }
     public void insertSort(){
         if(index < sorts.length){
@@ -102,12 +91,13 @@ public class VSMain extends JPanel implements Runnable{
                 int temp = e[i];
                 e[i] = e[j];
                 e[j] = temp;
+                actionList.add(new actionObject(j, i));
             }
         }
-        
         int temp = e[j + 1];
         e[j + 1] = e[end];
         e[end] = temp;
+        actionList.add(new actionObject(j + 1, end));
         return j + 1;
     }
     @Override
@@ -116,6 +106,16 @@ public class VSMain extends JPanel implements Runnable{
         animator = new Thread(this);
         animator.start();
     }
+    public void iterate() {
+    	//if(aI < actionList.size()) {
+    		/*
+    		int temp = sorts[actionList.get(aI).swapA];
+    		sorts[actionList.get(aI).swapA] = sorts[actionList.get(aI).swapB];
+    		sorts[actionList.get(aI).swapB] = temp;*/
+    		display = swap(display, actionList.get(aI).swapA, actionList.get(aI).swapB);
+    		aI++;
+    	//}
+    }
     @Override
     public void run(){
         long beforeTime, timeDiff, sleep;
@@ -123,7 +123,7 @@ public class VSMain extends JPanel implements Runnable{
 
         while(true){
             repaint();
-            quickSort();
+            iterate();
             timeDiff = System.currentTimeMillis() - beforeTime;
             sleep = DELAY - timeDiff;
             if(sleep < 0){
@@ -139,5 +139,3 @@ public class VSMain extends JPanel implements Runnable{
         }
     }
 }
-
-    
