@@ -1,0 +1,69 @@
+public class HelloWorld{
+     public static void main(String []args){
+        int[][] board = new int[10][10];
+        for(int i = 0; i < board.length; i++){
+         for(int c = 0; c < board[i].length; c++){
+             board[i][c] = 0;
+         }
+        }
+        String string = "";
+        for(int i = 0; i < board.length; i++){
+         for(int c = 0; c < board[i].length; c++){
+            string += board[i][c];
+         }
+         string+="\n";
+        }
+        System.out.println(string);
+        int run = 0;
+        int[][] snakePos = new int[1][2];
+        snakePos[0][0] = 0;
+        snakePos[0][1] = 1;
+        while(run < 10){
+            snakePos[0][1]++;
+            run++;
+            if(snakePos[0][1] > board[snakePos[0][0]].length){
+                snakePos[0][1] = 0;
+            }
+            
+        string = "";
+        for(int i = 0; i < board.length; i++){
+         for(int c = 0; c < board[i].length; c++){
+             if(i != snakePos[0][0]&&c != snakePos[0][1]){
+                 string+=board[i][c];
+             }
+             else{
+                 string+="1";
+             }
+            
+         }
+         string+="\n";
+        }
+        System.out.println(string);
+        }
+     }
+     
+}/*
+public class Board{
+    private int[][] board;
+    public Board(){
+        initBoard();
+    }
+    public void initBoard(){
+        board = new int[100][100];
+        for(int i = 0; i < board.length; i++){
+         for(int c = 0; c < board[i].length; c++){
+             board[i][c] = 0;
+         }
+        }
+    }
+    public String toString(){
+        String string = "";
+        for(int i = 0; i < board.length; i++){
+         for(int c = 0; c < board[i].length; c++){
+            string += board[i][c];
+         }
+         string+="\n";
+        }
+        return string;
+    }
+}*/
