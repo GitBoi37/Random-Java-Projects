@@ -16,32 +16,30 @@ public class HelloWorld{
         System.out.println(string);
         int run = 0;
         int[][] snakePos = new int[1][2];
-        snakePos[0][0] = 0;
+        snakePos[0][0] = 1;
         snakePos[0][1] = 1;
         while(run < 10){
-            snakePos[0][1]++;
-            run++;
+            
             if(snakePos[0][1] > board[snakePos[0][0]].length){
                 snakePos[0][1] = 0;
             }
             
-        string = "";
-        for(int i = 0; i < board.length; i++){
-         for(int c = 0; c < board[i].length; c++){
-             if(i != snakePos[0][0]&&c != snakePos[0][1]){
-                 string+=board[i][c];
-             }
-             else{
-                 string+="1";
-             }
-            
-         }
-         string+="\n";
-        }
-        System.out.println(string);
+            string = "";
+            board = refreshSnake(board, snakePos);
+            for(int i = 0; i < board.length; i++){
+                for(int c = 0; c < board[i].length; c++){
+                    string+=board[i][c];
+                }
+                string+="\n";
+            }
+            snakePos[0][1]++;
+            run++;
+            System.out.println(string);
         }
      }
-     
+     public refreshSnake(int[][] b, int[][] s){
+         
+     }
 }/*
 public class Board{
     private int[][] board;
