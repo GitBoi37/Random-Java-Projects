@@ -7,7 +7,7 @@ public class SnakeDriver extends JFrame{
         initUI();
     }
     private void initUI(){
-        add(new Snake());
+        add(new SnakeGame());
         pack();
         setResizable(false);
         pack();
