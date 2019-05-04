@@ -1,3 +1,5 @@
+package snake;
+
 
 import java.util.ArrayList;
 import java.awt.Color;
@@ -21,8 +23,7 @@ public class SnakeGame extends JPanel implements Runnable, KeyListener{
     private int score = 0;
     private int snakeHeadY = 100;
     private int snakeHeadX = 100;
-    private final int snakeMoveUnit = 50;
-    private final int snakeUnit = 50;
+    private final int snakeUnit = 20;
     private int snakeSize = 3;
     private int w;
     private int h;
@@ -45,6 +46,10 @@ public class SnakeGame extends JPanel implements Runnable, KeyListener{
         bounds[1] = new Rectangle(w - 20,0,20,h);
         bounds[2] = new Rectangle(0,0,w,20);
         bounds[3] = new Rectangle(0,h-65,w,50);
+        snake = new ArrayList<Rectangle>();
+        for(int i = 0; i < snakeSize; i++) {
+        	snake.add(new Rectangle(snakeHeadX + snakeUnit*(i + 1) + snakeUnit*(i + 1)/10, snakeHeadY, snakeUnit, snakeUnit));
+        }
         //all.add(new Platform(150, (int)d.getHeight() - 100, 100, 10));
     }
     
@@ -56,9 +61,9 @@ public class SnakeGame extends JPanel implements Runnable, KeyListener{
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.WHITE);
         for(Rectangle r : snake){
-            g2d.fillRect(r.x, r.y, r.width, r.height);
-        }
-        g2d.fillRect(snakeHeadX, snakeHeadY, 50, 50);
+           g2d.fillRect(r.x, r.y, r.width, r.height);
+    	}
+        g2d.fillRect(snakeHeadX, snakeHeadY, snakeUnit, snakeUnit);
         g2d.setColor(Color.RED);
         for(Rectangle r : bounds){
             g2d.fillRect((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight());
@@ -93,6 +98,7 @@ public class SnakeGame extends JPanel implements Runnable, KeyListener{
         snakeHeadX = 100;
         lose = false;
         direction = null;
+        snakeSize = 0;
     }
     @Override
     public void addNotify(){
@@ -100,51 +106,50 @@ public class SnakeGame extends JPanel implements Runnable, KeyListener{
         animator = new Thread(this);
         animator.start();
     }
-    public void checkBounds(){
+    public boolean checkBounds(){
         Rectangle s = new Rectangle(snakeHeadX, snakeHeadY, snakeUnit, snakeUnit);
         for(Rectangle r : bounds){
             
             if(s.intersects(r)){
+            	direction = null;
                 lose = true;
-                return;
+                return true;
             }
         }
+        return false;
+    }
+    public void move() {
+    	if(snakeSize == 0) {
+    		snake.removeAll(snake);
+    	}
+    	for(int i = 0; i < snake.size(); i++) {
+    		//implement snakemoving
+    	}
     }
     public void update(){
-        checkBounds();
-        /*
-        Dimension s = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        if(snakeHeadX <= 0){
-            lose = true;
-        }
-        if(snakeHeadX >= s.getWidth() - snakeUnit - 35){
-            lose = true;
-        }
-        if(snakeHeadY <= 0){
-            lose = true;
-        }
-        if(snakeHeadY >= s.getHeight() - snakeUnit - 90){
-            lose = true;
-        }*/
-        if(lose == false){
-            if(direction == null){
-                lose = false;
-            }
-            else{
-                if(direction.equals(directions[0])){
-                    snakeHeadY-=snakeMoveUnit;
-                }
-                if(direction.equals(directions[1])){
-                    snakeHeadY+=snakeMoveUnit;
-                }
-                if(direction.equals(directions[2])){
-                    snakeHeadX-=snakeMoveUnit;
-                }
-                if(direction.equals(directions[3])){
-                    snakeHeadX+=snakeMoveUnit;
-                }
-            }
-        }
+    	if(checkBounds() == false) {
+    		if(lose == false){
+    			if(direction == null){
+    				lose = false;
+    			}
+    			else{
+    				if(direction.equals(directions[0])){
+    					snakeHeadY-=snakeUnit;
+    				}
+    				if(direction.equals(directions[1])){
+    					snakeHeadY+=snakeUnit;
+    				}
+    				if(direction.equals(directions[2])){
+    					snakeHeadX-=snakeUnit;
+    				}
+    				if(direction.equals(directions[3])){
+    					snakeHeadX+=snakeUnit;
+    				}
+    			}
+    		}
+    	}
+        
+        move();
     }
     @Override
     public void run(){
