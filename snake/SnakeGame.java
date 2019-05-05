@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 import java.awt.event.*;
-import java.awt.font.*;
 
 public class SnakeGame extends JPanel implements Runnable, KeyListener {
 	/**
