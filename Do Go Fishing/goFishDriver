@@ -1,0 +1,648 @@
+package revisingGoFish.changing;
+
+import java.util.Scanner;
+import java.util.ArrayList;
+public class betterGoFish{
+    public static void main(String args[]) throws InterruptedException {
+        ArrayList<Card> pHand = new ArrayList<Card>(7);
+        ArrayList<Card> c0Hand = new ArrayList<Card>(7);
+        ArrayList<Card> c1Hand = new ArrayList<Card>(7);
+        ArrayList<Card> c2Hand = new ArrayList<Card>(7);
+        ArrayList<Card> drawn = new ArrayList<Card>();
+        int[] randHand1 = new int[7];
+        int[] randHand2 = new int[7];
+        int[] randHand3 = new int[7];
+        int[] randHand4 = new int[7];
+        Card[] deck = new Card[56];
+        final String[] suits = {"Hearts", "Clubs", "Spades", "Diamonds"};
+        final String[] faces = {"Ace", "Jack", "Queen", "King"};
+        gameHelper game = new gameHelper();
+        Scanner input = new Scanner(System.in);
+        
+        String face = "";
+        String suit = "";
+        int number = 0;
+        int cardID = 0;
+        //instantiating deck
+        for(int i = 0; i < 56; i++){
+            //deciding suits
+            if(i >= 0 && i < 14){
+                suit = suits[0];
+                cardID = i;
+            }
+            else if(i >= 14 && i < 28){
+                suit = suits[1];
+                cardID = i % 14;
+            }
+            else if(i >= 28 && i < 42){
+                suit = suits[2];
+                cardID = i % 28;
+            }
+            else if(i >= 42 && i < 56){
+                suit = suits[3];
+                cardID = i % 42;
+            }
+            //deciding faces
+            if(i == 0 || i == 14 || i == 28 || i == 42){
+                face = faces[0];
+            }
+            else if(i == 11 || i == 25 || i == 39 || i == 53){
+                face = faces[1];  
+            }
+            else if(i == 12 || i == 26 || i == 40 || i == 54){
+                face = faces[2];  
+            }
+            else if(i == 13 || i == 27 || i == 41 || i == 55){
+                face = faces[3];
+            }         
+            //deciding numbers
+            if(i > 0 && i < 11){
+                face = "";
+                number = i;
+            }
+            else if(i > 14 && i < 25){
+                face = "";
+                number = i % 14;
+            }
+            else if(i > 28 && i < 39){
+                face = "";
+                number = i % 28;
+            }
+            else if(i > 42 && i < 53){
+                face = "";
+                number = i % 42;
+            }
+            //create instance i in deck of Card
+            deck[i] = new Card(suit, face, number, i, cardID);
+        }
+        //instantiating hands
+        
+        /*
+         * 
+         * add support for multiple computers
+         */
+        //for player
+        ArrayList<Integer> impossibleRands = new ArrayList<Integer>();
+        for(int c = 0; c < 7; c++){
+            randHand1[c] = 1 + (int)(Math.random()*55);
+            impossibleRands.add(randHand1[c]);
+        }
+        int TBD= 0;
+        //for c0Hand
+        boolean inImpossibleRands = true;
+        for(int i = 0; i < 7; i++){
+            inImpossibleRands = true;
+            while(inImpossibleRands){
+                TBD = 1 + (int)(Math.random()*55);
+                for(int c = 0; c < impossibleRands.size(); c++){
+                    if(TBD == impossibleRands.get(c)){
+                        inImpossibleRands = true;   
+                        break;
+                    }
+                    else{inImpossibleRands = false;}
+                }
+            }
+            impossibleRands.add(TBD);
+            randHand2[i] = TBD;
+        }
+        TBD= 0;
+        //for c1Hand
+        for(int i = 0; i < 7; i++){
+            inImpossibleRands = true;
+            while(inImpossibleRands){
+                TBD = 1 + (int)(Math.random()*55);
+                for(int c = 0; c < impossibleRands.size(); c++){
+                    if(TBD == impossibleRands.get(c)){
+                        inImpossibleRands = true;   
+                        break;
+                    }
+                    else{inImpossibleRands = false;}
+                }
+            }
+            impossibleRands.add(TBD);
+            randHand3[i] = TBD;
+        }
+        TBD= 0;
+        //for c2Hand
+        for(int i = 0; i < 7; i++){
+            inImpossibleRands = true;
+            while(inImpossibleRands){
+                TBD = 1 + (int)(Math.random()*55);
+                for(int c = 0; c < impossibleRands.size(); c++){
+                    if(TBD == impossibleRands.get(c)){
+                        inImpossibleRands = true;   
+                        break;
+                    }
+                    else{inImpossibleRands = false;}
+                }
+            }
+            impossibleRands.add(TBD);
+            randHand4[i] = TBD;
+        }
+
+        System.out.println(deck[40]);
+        System.out.println(randHand1.length);
+        for(int i = 0; i < randHand1.length;i++){
+            pHand.add(deck[randHand1[i]]);
+            drawn.add(deck[randHand1[i]]);
+            c0Hand.add(deck[randHand2[i]]);
+            drawn.add(deck[randHand2[i]]);
+            c1Hand.add(deck[randHand3[i]]);
+            drawn.add(deck[randHand3[i]]);
+            c2Hand.add(deck[randHand4[i]]);
+            drawn.add(deck[randHand4[i]]);
+        }
+        //checking for doubles
+        int[] pHandDCheck = {0,0};
+        int[] c0HandCheck = {0,0};
+        int[] c1HandCheck = {0,0};
+        int[] c2HandCheck = {0,0};
+        for(int i = 0; i < 3; i++){
+            pHandDCheck = game.checkForDoubles(pHand);
+            if(!(pHandDCheck[0] == -1 || pHandDCheck[1] == -1)){
+                pHand.remove(pHandDCheck[0]);
+                drawn.remove(pHandDCheck[0]);
+                pHand.remove(pHandDCheck[1] - 1);
+                drawn.remove(pHandDCheck[1] - 1);
+            }
+            c0HandCheck = game.checkForDoubles(c0Hand);
+            if(!(c0HandCheck[0] == -1 || c0HandCheck[1] == -1)){
+                c0Hand.remove(c0HandCheck[0]);
+                drawn.remove(c0HandCheck[0]);
+                c0Hand.remove(c0HandCheck[1] - 1);
+                drawn.remove(c0HandCheck[1] - 1);
+            }
+            c1HandCheck = game.checkForDoubles(c1Hand);
+            if(!(c1HandCheck[0] == -1 || c1HandCheck[1] == -1)){
+                c1Hand.remove(c1HandCheck[0]);
+                drawn.remove(c1HandCheck[0]);
+                c1Hand.remove(c1HandCheck[1] - 1);
+                drawn.remove(c1HandCheck[1] - 1);
+            }
+            c2HandCheck = game.checkForDoubles(c2Hand);
+            if(!(c2HandCheck[0] == -1 || c2HandCheck[1] == -1)){
+                c2Hand.remove(c2HandCheck[0]);
+                c2Hand.remove(c2HandCheck[1] - 1);
+            }
+        }
+        //printing out deck
+        for(int i = 0; i < 56; i++){
+            System.out.println(deck[i]);
+        }
+        //gameLoop
+        
+        
+        //start of actual game
+        
+        
+        int in = 0;
+        int compChose = -1;
+        int compMove;
+        int compCompChose = 0;
+        boolean check  = false;
+        boolean secondCheck = false;
+        boolean thirdCheck  = false;
+        boolean inDrawn = true;
+        String compDialog = "";
+        while(pHand.size() != 0 && c0Hand.size() != 0){
+            pHandDCheck[0] = 0;
+            pHandDCheck[1] = 0;
+            pHandDCheck = game.checkForDoubles(pHand);
+            if(!(pHandDCheck[0] == -1 || pHandDCheck[1] == -1)){
+                System.out.println("Found double in player hand.");
+                pHand.remove(pHandDCheck[0]);
+                pHand.remove(pHandDCheck[1] - 1);
+            }
+            c0HandCheck[0] = 0;
+            c0HandCheck[1] = 0;
+            c0HandCheck = game.checkForDoubles(c0Hand);
+            if(!(c0HandCheck[0] == -1 || c0HandCheck[1] == -1)){
+                System.out.println("Found double in Computer 0 hand.");
+                c0Hand.remove(c0HandCheck[0]);
+                c0Hand.remove(c0HandCheck[1] - 1);
+            }
+            c1HandCheck[0] = 0;
+            c1HandCheck[1] = 0;
+            c1HandCheck = game.checkForDoubles(c1Hand);
+            if(!(c1HandCheck[0] == -1 || c1HandCheck[1] == -1)){
+                System.out.println("Found double in Computer 1 hand.");
+                c1Hand.remove(c1HandCheck[0]);
+                c1Hand.remove(c1HandCheck[1] - 1);
+            }
+            c2HandCheck[0] = 0;
+            c2HandCheck[1] = 0;;
+            c2HandCheck = game.checkForDoubles(c2Hand);
+            if(!(c2HandCheck[0] == -1 || c2HandCheck[1] == -1)){
+                System.out.println("Found double in Computer 2 hand.");
+                c2Hand.remove(c2HandCheck[0]);
+                c2Hand.remove(c2HandCheck[1] - 1);
+            }
+            game.printHand(pHand, "Player");
+            Thread.sleep(500);
+            game.printHand(c0Hand, "Computer 0");
+            Thread.sleep(500);
+            game.printHand(c1Hand, "Computer 1");
+            Thread.sleep(500);
+            game.printHand(c2Hand, "Computer 2");
+            Thread.sleep(500);
+            if(pHand.size() < 1){
+                break;
+            }
+            if(c0Hand.size() < 1){
+                break;
+            }
+            if(c1Hand.size() < 1){
+                break;
+            }
+            if(c2Hand.size() < 1){
+                break;
+            }
+            System.out.println("Choose a card in your hand(0 - 13)");
+            in = input.nextInt();
+            check = game.checkInHand(in, pHand);
+            if(check == false){
+                while(check == false){
+                    System.out.println("Card isn't in your hand");
+                    in = input.nextInt();
+                    check = game.checkInHand(in, pHand);
+                }
+            }
+            compChose = -1;
+            System.out.println("Which computer would you like to ask?(0,1,2) ");
+            while(compChose < 0 || compChose > 2){
+                compChose = input.nextInt();
+                if(compChose < 0 || compChose > 2){
+                    System.out.println("Not a choice");
+                }
+            }
+            //if in both hands set location of same cards to null
+            System.out.println("Checking...");
+            Thread.sleep(2000);
+            int whichHand = 0;
+            if(compChose == 0){
+                secondCheck = game.checkInHand(in, c0Hand);
+            }
+            if(compChose == 1){
+                secondCheck = game.checkInHand(in, c1Hand); whichHand = 1;
+            }
+            if(compChose == 2){
+                secondCheck = game.checkInHand(in, c2Hand); whichHand = 2;
+            }
+            if(secondCheck){
+                System.out.print("You got a match!");
+                if(whichHand == 0){
+                    System.out.println(" Computer 0's: " + c0Hand.get(game.locationInHand(in, c0Hand)));
+                    pHand.remove(game.locationInHand(in, pHand));
+                    c0Hand.remove(game.locationInHand(in, c0Hand));
+                }
+                if(whichHand == 1){
+                    System.out.println(" Computer 1's: " + c1Hand.get(game.locationInHand(in, c1Hand)));
+                    pHand.remove(game.locationInHand(in, pHand));
+                    c1Hand.remove(game.locationInHand(in, c1Hand));
+                }
+                if(whichHand == 2){
+                    System.out.println(" Computer 2's: " + c2Hand.get(game.locationInHand(in, c2Hand)));
+                    pHand.remove(game.locationInHand(in, pHand));
+                    c2Hand.remove(game.locationInHand(in, c2Hand));
+                }
+                Thread.sleep(2000);
+                if(pHand.size() < 1){
+                    break;
+                }
+            }
+            else{
+                //if not in both hands set pHand to have another card
+                System.out.println("Player goes fishing...");
+                Card toAdd = game.goFish(pHand, drawn, deck);
+                System.out.println("Found: " + toAdd);
+                pHand.add(toAdd);
+                drawn.add(pHand.get(pHand.size() - 1));
+            }
+            if(pHand.size() < 1){
+                break;
+            }
+            if(c0Hand.size() < 1){
+                break;
+            }
+            if(c1Hand.size() < 1){
+                break;
+            }
+            if(c2Hand.size() < 1){
+                break;
+            }
+            //computer 0 turn
+            compMove = (int)(Math.random()*14);
+            boolean compValid = false;
+            while(compValid == false){
+                compMove = (int)(Math.random()*14);
+                for(Card c : c0Hand){
+                    if(c.getID() == compMove){
+                        compValid = true;
+                    }
+                }
+            }
+            compCompChose = (int)(Math.random() * 3);
+            //double check
+            System.out.println("Computer 0's turn...");
+            
+            
+            if(compCompChose == 0){
+                thirdCheck = game.checkInHand(compMove, pHand);
+                whichHand = -1;
+                compDialog = "Player, do you have a " + compMove + "?";
+            }
+            //if(!thirdCheck){thirdCheck = game.checkInHand(compMove, c0Hand); whichHand = 0;}
+            if(compCompChose == 1){
+                thirdCheck = game.checkInHand(compMove, c1Hand); 
+                whichHand = 1;
+                compDialog = "Computer " + compCompChose + ", do you have a " + compMove + "?";
+            }
+            if(compCompChose == 2){
+                thirdCheck = game.checkInHand(compMove, c2Hand); 
+                whichHand = 2;
+                compDialog = "Computer " + compCompChose + ", do you have a " + compMove + "?";
+            }
+            System.out.println(compDialog);
+            inDrawn = true;
+            Thread.sleep(2000);
+            if(thirdCheck){
+                System.out.println("Computer 0 matched with: ");
+                Thread.sleep(2000);
+                if(whichHand == -1){
+                    System.out.println("Players: " +
+                                        pHand.get(game.locationInHand(compMove, pHand)));
+                    pHand.remove(game.locationInHand(compMove, pHand));
+                }
+                // if(whichHand == 0){
+                   // System.out.println(c0Hand.get(game.locationInHand(in, c0Hand)));
+                // }
+                if(whichHand == 1){
+                    System.out.println("Computer 1's: " +
+                                        c1Hand.get(game.locationInHand(compMove, c1Hand)));
+                    c1Hand.remove(game.locationInHand(compMove, c1Hand));
+                }
+                if(whichHand == 2){
+                    System.out.println("Computer 2's: " +
+                                        c2Hand.get(game.locationInHand(compMove, c2Hand)));
+                    c2Hand.remove(game.locationInHand(compMove, c2Hand));
+                }
+                c0Hand.remove(game.locationInHand(compMove, c0Hand));
+                if(c0Hand.size() < 1){
+                    break;
+                }
+            }
+            else{
+                //if not in both hands set c0Hand to have another card
+                System.out.println("Computer went fishing.");
+                Thread.sleep(2000);
+                Card nextCard = new Card();
+                nextCard = game.goFish(pHand, drawn, deck);
+                c0Hand.add(nextCard);
+                drawn.add(nextCard);
+                c0HandCheck[0] = 0;
+                c0HandCheck[1] = 0;
+                c0HandCheck = game.checkForDoubles(c0Hand);
+                if(!(c0HandCheck[0] == -1 || c0HandCheck[1] == -1)){
+                    System.out.println("Found double in Computer 0 hand.");
+                    c0Hand.remove(c0HandCheck[0]);
+                    c0Hand.remove(c0HandCheck[1] - 1);
+                }
+            }
+            if(pHand.size() < 1){
+                break;
+            }
+            if(c0Hand.size() < 1){
+                break;
+            }
+            if(c1Hand.size() < 1){
+                break;
+            }
+            if(c2Hand.size() < 1){
+                break;
+            }
+            
+            //computer 1 turn
+            
+            compMove = (int)(Math.random()*14);
+            compValid = false;
+            while(compValid == false){
+                compMove = (int)(Math.random()*14);
+                for(Card c : c1Hand){
+                    if(c.getID() == compMove){
+                        compValid = true;
+                    }
+                }
+            }
+            compCompChose = (int)(Math.random() * 3);
+            //double check
+            System.out.println("Computer 1's turn...");
+            
+            if(compCompChose == 0){
+                thirdCheck = game.checkInHand(compMove, pHand);
+                whichHand = -1;
+                compDialog = "Player, do you have a " + compMove + "?";
+            }
+            if(compCompChose == 1){
+                thirdCheck = game.checkInHand(compMove, c0Hand); 
+                whichHand = 0;
+                compDialog = "Computer " + (compCompChose - 1) + ", do you have a " + compMove + "?";}
+            //if(!thirdCheck){thirdCheck = game.checkInHand(compMove, c1Hand); whichHand = 1;}
+            if(compCompChose == 2){
+                thirdCheck = game.checkInHand(compMove, c2Hand); 
+                whichHand = 2;
+                compDialog = "Computer " + compCompChose + ", do you have a " + compMove + "?";
+            }
+            System.out.println(compDialog);
+            Thread.sleep(2000);
+            inDrawn = true;
+            if(thirdCheck){
+                System.out.println("Computer 1 matched with: ");
+                Thread.sleep(2000);
+                if(whichHand == -1){
+                    System.out.println("Players: " +
+                                        pHand.get(game.locationInHand(compMove, pHand)));
+                    pHand.remove(game.locationInHand(compMove, pHand));
+                }
+                if(whichHand == 0){
+                   System.out.println("Computer 0's: " + c0Hand.get(game.locationInHand(compMove, c0Hand)));
+                   c0Hand.remove(game.locationInHand(compMove, c0Hand));
+                }
+                // if(whichHand == 1){
+                    // System.out.println(c1Hand.get(game.locationInHand(in, c1Hand)));
+                // }
+                if(whichHand == 2){
+                    System.out.println("Computer 2's: " +
+                                        c2Hand.get(game.locationInHand(compMove, c2Hand)));
+                    c2Hand.remove(game.locationInHand(compMove, c2Hand));
+                }
+                c1Hand.remove(game.locationInHand(compMove, c1Hand));
+                if(c1Hand.size() < 1){
+                    break;
+                }
+            }
+            else{
+                //if not in both hands set c1Hand to have another card
+                System.out.println("Computer 1 went fishing.");
+                Thread.sleep(2000);
+                Card nextCard = new Card();
+                nextCard = game.goFish(c1Hand, drawn, deck);
+                c1Hand.add(nextCard);
+                drawn.add(nextCard);
+                c1HandCheck[0] = 0;
+                c1HandCheck[1] = 0;
+                c1HandCheck = game.checkForDoubles(c0Hand);
+                if(!(c1HandCheck[0] == -1 || c1HandCheck[1] == -1)){
+                    System.out.println("Found double in Computer 1 hand.");
+                    c1Hand.remove(c1HandCheck[0]);
+                    c1Hand.remove(c1HandCheck[1] - 1);
+                }
+            }
+            if(pHand.size() < 1){
+                break;
+            }
+            if(c0Hand.size() < 1){
+                break;
+            }
+            if(c1Hand.size() < 1){
+                break;
+            }
+            if(c2Hand.size() < 1){
+                break;
+            }
+            //computer 2 turn
+            compMove = (int)(Math.random()*14);
+            compValid = false;
+            while(compValid == false){
+                compMove = (int)(Math.random()*14);
+                for(Card c : c2Hand){
+                    if(c.getID() == compMove){
+                        compValid = true;
+                    }
+                }
+            }
+            //double check
+            compCompChose = (int)(Math.random()*3);
+            System.out.println("Computer 2's turn...");
+            
+            if(compCompChose == 0){
+                thirdCheck = game.checkInHand(compMove, pHand);
+                whichHand = -1;
+                compDialog = "Player, do you have a " + compMove + "?";
+            }
+            if(compCompChose == 1){
+                thirdCheck = game.checkInHand(compMove, c0Hand); 
+                whichHand = 0;
+                compDialog = "Computer " + (compCompChose - 1) + ", do you have a " + compMove + "?";
+            }
+            if(compCompChose == 2){
+                thirdCheck = game.checkInHand(compMove, c1Hand);
+                whichHand = 1;
+                compDialog = "Computer " + (compCompChose - 1) + ", do you have a " + compMove + "?";
+            }
+            System.out.println(compDialog);
+            Thread.sleep(2000);
+            //if(!thirdCheck){thirdCheck = game.checkInHand(compMove, c2Hand); whichHand = 2;}
+            inDrawn = true;
+            if(thirdCheck){
+                System.out.println("Computer 2 matched with: ");
+                Thread.sleep(2000);
+                if(whichHand == -1){
+                    System.out.println("Players: " +
+                                        pHand.get(game.locationInHand(compMove, pHand)));
+                    pHand.remove(game.locationInHand(compMove, pHand));
+                }
+                if(whichHand == 0){
+                    System.out.println("Computer 0's: " +
+                                        c0Hand.get(game.locationInHand(compMove, c0Hand)));
+                    c0Hand.remove(game.locationInHand(compMove, c0Hand));
+                }
+                if(whichHand == 1){
+                    System.out.println("Computer 1's: " +
+                                       c1Hand.get(game.locationInHand(compMove, c1Hand)));
+                    c1Hand.remove(game.locationInHand(compMove, c1Hand));
+                }
+                // if(whichHand == 2){
+                    // System.out.println(c2Hand.get(game.locationInHand(in, c2Hand)));
+                // }
+                c2Hand.remove(game.locationInHand(compMove, c2Hand));
+                if(c2Hand.size() < 1){
+                    break;
+                }
+            }
+            else{
+                //if not in both hands set c2Hand to have another card
+                System.out.println("Computer 2 went fishing.");
+                Thread.sleep(2000);
+                Card nextCard = new Card();
+                nextCard = game.goFish(c2Hand, drawn, deck);
+                c2Hand.add(nextCard);
+                drawn.add(nextCard);
+                c2HandCheck[0] = 0;
+                c2HandCheck[1] = 0;;
+                c2HandCheck = game.checkForDoubles(c0Hand);
+                if(!(c2HandCheck[0] == -1 || c2HandCheck[1] == -1)){
+                    System.out.println("Found double in Computer 2 hand.");
+                    c2Hand.remove(c2HandCheck[0]);
+                    c2Hand.remove(c2HandCheck[1] - 1);
+                }
+            }//end computer 2 turn
+            //checking for doubles
+            pHandDCheck[0] = 0;
+            pHandDCheck[1] = 0;
+            pHandDCheck = game.checkForDoubles(pHand);
+            if(!(pHandDCheck[0] == -1 || pHandDCheck[1] == -1)){
+                System.out.println("Found double in player hand.");
+                pHand.remove(pHandDCheck[0]);
+                pHand.remove(pHandDCheck[1] - 1);
+            }
+            c0HandCheck[0] = 0;
+            c0HandCheck[1] = 0;
+            c0HandCheck = game.checkForDoubles(c0Hand);
+            if(!(c0HandCheck[0] == -1 || c0HandCheck[1] == -1)){
+                System.out.println("Found double in Computer 0 hand.");
+                c0Hand.remove(c0HandCheck[0]);
+                c0Hand.remove(c0HandCheck[1] - 1);
+            }
+            c1HandCheck[0] = 0;
+            c1HandCheck[1] = 0;
+            c1HandCheck = game.checkForDoubles(c0Hand);
+            if(!(c1HandCheck[0] == -1 || c1HandCheck[1] == -1)){
+                System.out.println("Found double in Computer 1 hand.");
+                c1Hand.remove(c1HandCheck[0]);
+                c1Hand.remove(c1HandCheck[1] - 1);
+            }
+            c2HandCheck[0] = 0;
+            c2HandCheck[1] = 0;;
+            c2HandCheck = game.checkForDoubles(c0Hand);
+            if(!(c2HandCheck[0] == -1 || c2HandCheck[1] == -1)){
+                System.out.println("Found double in Computer 2 hand.");
+                c2Hand.remove(c2HandCheck[0]);
+                c2Hand.remove(c2HandCheck[1] - 1);
+            }
+            if(pHand.size() < 1){
+                break;
+            }
+            if(c0Hand.size() < 1){
+                break;
+            }
+            if(c1Hand.size() < 1){
+                break;
+            }
+            if(c2Hand.size() < 1){
+                break;
+            }
+        }
+        if(pHand.size() == 0){
+            System.out.println("Game over. You won! AHHHHH YESSSSSSSSS");
+        }
+        if(c0Hand.size() == 0){
+            System.out.println("Game over. You lost. Computer 0 Won. You must be smarter than the machine.");
+        }
+        if(c1Hand.size() == 0){
+            System.out.println("Game over. You lost. Computer 1 Won. You're doing great sweety.");
+        }
+        if(c2Hand.size() == 0){
+            System.out.println("Game over. You lost. Computer 2 Won. You'll get the dub next time gamer.");
+        }
+    }
+}

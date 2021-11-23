@@ -1,0 +1,105 @@
+package revisingGoFish.changing;
+
+import java.util.ArrayList;
+public class theGame{
+    public void printHand(ArrayList<Card> list, String playerComp){
+        System.out.println();
+        System.out.println(playerComp + "'s hand: ");
+        int iterations = 0;
+        int numReturns = 0;
+        if(playerComp.equals("Player")){
+            for(Card c : list){
+                if(iterations == 0){
+                    System.out.print(c);
+                }
+                else if(iterations < 6){
+                    System.out.print(" + " + c);
+                }
+                else if(numReturns == 0){
+                    numReturns = 1;
+                    System.out.print("\n" + c);
+                }
+                iterations++;
+            }
+            System.out.println("(Cards total: " + iterations + ")");
+        }
+        else{
+            System.out.println(list.size() + " cards currently");
+        }
+        System.out.println();
+    }
+    public boolean checkInHand(int in, ArrayList<Card> hand){
+        boolean check = false;
+        int iterator = 0;
+        for(Card c : hand){
+            if(in == hand.get(iterator).getID()){
+                check = true;
+            }
+            iterator++;
+        }
+        return check;
+    }
+    public int locationInHand(int in, ArrayList<Card> hand){
+        int location = 0;
+        for(int i = 0;  i < hand.size(); i++){
+            location = i;
+            if(in == (hand.get(i)).getID()){
+                break;
+            }
+        }
+        return location;
+    }
+    public int[] randomize(int randHand1[], int i, int randHand2[], int c){
+        randHand1[i] = 1 + (int)(Math.random()*55);
+        randHand2[c] = 1 + (int)(Math.random()*55);
+        return randHand1;
+    }
+    public int[] checkForDoubles(ArrayList<Card> hand){
+        int e = 0;
+        int d = 0; 
+        int[] doubleLocs = new int[2];
+        doubleLocs[0] = -1; doubleLocs[1] = -1;
+        outer: for(int c = 0; c < hand.size(); c++){
+            for(int i = 0; i < hand.size(); i++){
+                e = hand.get(c).getID();
+                d = hand.get(i).getID();
+                if(i != c){
+                    if(e == d){
+                        System.out.println("A double: " + hand.get(i).getID() + " was found");
+                        if(i < c){
+                            doubleLocs[0] = i;
+                            doubleLocs[1] = c;
+                            break outer;
+                        }
+                        
+                        if(c < i){
+                            doubleLocs[0] = c;
+                            doubleLocs[1] = i;
+                            break outer;
+                        }
+                    }
+                }
+            }
+        }
+        return doubleLocs;
+    }
+    public Card goFish(ArrayList<Card> hand, ArrayList<Card> cHand, Card[] deck){
+        int nextCard = 1 +(int)(Math.random()*55);
+        int inHand = 0;
+        boolean isInHand = true;
+        
+        while(isInHand == true){
+            for(int i = 0; i < hand.size(); i++){
+                for(int c = 0; c < cHand.size(); c++){
+                    if(hand.get(i).getNumber() == nextCard || cHand.get(c).getNumber() == nextCard){
+                        isInHand = true;
+                        nextCard = 1 +(int)(Math.random()*55);
+                        break;
+                    }
+                    else{isInHand = false;}
+                }
+            }
+        }
+        return deck[nextCard];
+    }
+}

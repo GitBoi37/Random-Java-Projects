@@ -1,0 +1,45 @@
+package revisingGoFish.changing;
+
+public class Card{
+    private String suit;
+    private String face;
+    private boolean isFace;
+    private int number;
+    private int positionInDeck;
+    private int cardID;
+    public Card(){
+        suit = "";
+        face ="";
+        isFace = false;
+        number = 0;
+        positionInDeck = 0;
+        cardID = 0;
+    }
+    public Card(String suitIn, String faceIn, int numberIn, int positionInDeck, int CardID){
+        suit = suitIn;
+        face = faceIn;
+        number = numberIn;
+        this.positionInDeck = positionInDeck;
+        cardID = CardID;
+    }
+    public String getFace(){
+        return face;
+    }
+    public int getNumber(){
+        return number;
+    }
+    public int getPosition(){
+        return positionInDeck;
+    }
+    public int getID(){
+        return cardID;
+    }
+    public String toString(){
+        String output;
+        output = suit + " " + face + " " + number + " ";
+        if(number == 0 || number == 10 && !face.equals("")){
+            output = suit + " " + face + " " + cardID + " ";
+        }
+        return output;
+    }
+}
