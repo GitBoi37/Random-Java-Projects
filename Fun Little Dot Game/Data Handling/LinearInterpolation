@@ -1,0 +1,28 @@
+public class LinearInterpolation{
+    private int countt = 17;//how many outputs you want
+    private int aa = 0;//starting value
+    private int bb = 1;//ending value
+    private double[] arr = new double[countt];
+     public static void main(String []args){
+        LinearInterpolation instance = new LinearInterpolation();
+        instance.arr = instance.lerp(instance.aa, instance.bb, instance.countt);
+        for(double i : instance.arr){
+            System.out.printf("%.5f", i);
+            System.out.println();
+        }
+     }
+     
+     
+     public double[] lerp(int a, int b, int count){
+         double[] array = new double[count  + 1];
+         if(b - a > 0){
+            for(int i = 1; i < count + 2; i++){
+                 array[i-1] = (double)a + ((double)(i)-1)*((double)(b)-(double)(a))/(double)(count);
+            }
+         }
+         else{
+             System.out.println("B must be greater than A");
+         }
+         return array;
+     }
+}

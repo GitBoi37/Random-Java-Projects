@@ -1,0 +1,254 @@
+package rectsNdots;
+
+import java.util.ArrayList;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import javax.swing.JPanel;
+import java.awt.Toolkit;
+import java.awt.Font;
+import javax.swing.JOptionPane;
+import java.awt.event.*;
+public class AnimBoard extends JPanel implements Runnable, KeyListener{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Thread animator;
+    private final int DELAY = 5;
+    private final int s = 100;
+    private final int lerping = 7;
+    private final int dotTimer = 10;
+    private final int spawnTimer = 100;
+    private final int minSize = 10;
+    private boolean left = false;
+    private boolean up = false;
+    private int spawn = 0;
+    private int tick = 0;
+    private Rect player = new Rect();
+    private ArrayList<Dot> dots = new ArrayList<Dot>();
+    private int score = 0;
+    public AnimBoard(){
+        super();
+        setBackground(Color.BLACK);
+        setFocusable(true);
+        addKeyListener(this);
+        Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        player.setX((int)d.getWidth()/2);
+        player.setY((int)d.getHeight()/2);
+        player.setNewX((int)d.getWidth()/2);
+        player.setNewY((int)d.getHeight()/2);
+        setPreferredSize(d);
+        for(int i = 0; i < 1000; i++){
+            dots.add(new Dot());
+        }
+        for(int i = 0; i < dots.size(); i++){
+            for(int c = i + 1; c < dots.size() - 1; c++){
+                if(dots.get(i).getX() == dots.get(c).getX() || dots.get(i).getY() == dots.get(c).getY()){
+                    i = 0;
+                    dots.get(c).randomize();
+                    c = i + 1;
+                }
+            }
+        }
+    }
+    
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        
+        g2d.setColor(Color.YELLOW);
+        for(int i = 0; i < dots.size(); i++){
+            if(dots.get(i) != null) {
+                g2d.fillRect(dots.get(i).getX(),dots.get(i).getY(), dots.get(i).getSize(), dots.get(i).getSize());
+            }
+        }
+        g2d.setColor(Color.BLUE);
+        g2d.fill(player.getRect());
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Times New Roman", Font.PLAIN, 30));
+        g2d.drawString("Score: " + String.valueOf(score), 150, 100);
+        Toolkit.getDefaultToolkit().sync();
+    }
+    public void keyTyped(KeyEvent key){ } 
+    public void keyReleased(KeyEvent key){
+        if (key.getKeyCode() == KeyEvent.VK_A) {
+            player.modifyX(0);
+        }
+
+        if (key.getKeyCode() == KeyEvent.VK_S) {
+            player.modifyX(0);
+        }
+
+        if (key.getKeyCode() == KeyEvent.VK_D) {
+            player.modifyY(0);
+        }
+
+        if (key.getKeyCode() == KeyEvent.VK_W) {
+            player.modifyY(0);
+        }
+    }
+    public void keyPressed(KeyEvent key){
+        if(key.getKeyCode() == KeyEvent.VK_A){
+            player.setNewX(player.getX()-s);
+        }
+        if(key.getKeyCode() == KeyEvent.VK_S){
+            player.setNewY(player.getY()+s);
+        }
+        if(key.getKeyCode() == KeyEvent.VK_D){
+            player.setNewX(player.getX()+s);
+        }
+        if(key.getKeyCode() == KeyEvent.VK_W){
+            player.setNewY(player.getY()-s);
+        }
+        if(key.getKeyCode() == KeyEvent.VK_Q) {
+            if(player.getSize()>20) {
+                player.setSize(player.getSize()-10);
+            }
+        }
+        if(key.getKeyCode() == KeyEvent.VK_E) {
+            if(player.getSize() < 2000) {
+                player.setSize(player.getSize()+10);
+            }
+        }
+    }
+    @Override
+    public void addNotify(){
+        super.addNotify();
+        animator = new Thread(this);
+        animator.start();
+    }
+    public void check(){
+        if(player.getSize() < minSize) {
+            player.setSize(minSize);
+        }
+        for(int i = 0; i < dots.size(); i++){
+            if((player.getRect()).intersects(dots.get(i).bounds())){
+                score++;
+                dots.remove(i);
+                i--;
+            }
+            if(dotTimer == tick) {
+                dots.get(i).pathfind(player.getX(), player.getY(), player.getSize());
+            }
+        }
+        Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        //dots.add(new Dot());
+        //dots.add(new Dot());
+        //dots.add(new Dot());
+        //dots.add(new Dot());
+        dots.add(new Dot(10, (int)d.getHeight()-10, 20, (int)d.getWidth()-10, 20));/*
+        if(spawn == spawnTimer){
+            spawn = 0;
+            Dot toAdd = new Dot();
+            Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+            
+            if(up){
+                toAdd.setX((int)(Math.random() * d.getWidth() + 5));
+                toAdd.setY(1);
+                up = false;
+            }
+            else{
+                up = true;
+                toAdd.setX((int)(Math.random() * d.getWidth() + 5));
+                toAdd.setY((int)d.getHeight());
+            }
+            if(left){
+                toAdd.setY((int)(Math.random() * d.getWidth() + 5));
+                toAdd.setX(1);
+                left = false;
+                
+            }
+            else{
+                left = true;
+                toAdd.setX((int)(d.getHeight()));
+                toAdd.setY((int)(Math.random() * d.getWidth() + 5));
+            }
+            dots.add(toAdd);
+        }*/
+        spawn++;
+        if(dotTimer == tick){
+            tick = 0;
+        }
+        tick++;
+        if(player.getX() < 0) {
+            player.setX(0);
+            player.setNewX(0);
+        }
+        if(player.getY() < 0) {
+            player.setY(0);
+            player.setNewY(0);
+        }
+        if(player.getY() < 0 || player.getY() < 0){
+            explode();
+        }
+        if(player.getX() > this.getWidth() - player.getSize() - 3) {
+            player.setX(this.getWidth() - player.getSize() - 5);
+            player.setNewX(this.getWidth() - player.getSize() - 5);
+        }
+        if(player.getY() > this.getHeight() - player.getSize() - 8) {
+            player.setY(this.getHeight() - player.getSize()- 10);
+            player.setNewY(this.getHeight() - player.getSize()- 10);
+        }
+        if(player.getY() > this.getHeight()-player.getSize() -10 || player.getX() > this.getWidth()-player.getSize()-5){
+           deexplode(); 
+        }
+        if(Math.abs(player.getNewX() - player.getX()) >= lerping) {
+            if(player.getNewX() >= player.getX()) {
+                player.setX(player.getX() + lerping);
+            }
+            else {
+                player.setX(player.getX() - lerping);
+            }
+        }
+        else {
+            player.setX(player.getNewX());
+        }
+        if(Math.abs(player.getNewY() - player.getY()) >= lerping) {
+            if(player.getNewY() >= player.getY()) {
+                player.setY(player.getY() + lerping);
+            }
+            else {
+                player.setY(player.getY() - lerping);
+            }
+        }
+        else {
+            player.setY(player.getNewY());
+        }
+    }
+    public void deexplode(){
+        player.modifySize(-1);
+        if(player.getSize() < 2){
+            player.setSize(2);
+        } 
+        if(player.getY() > this.getHeight() -player.getSize() -5) {
+            player.modifyY(1);
+        }
+    }
+    public void explode(){
+        player.modifySize(1);
+    }
+    @Override
+    public void run(){
+        long beforeTime, timeDiff, sleep;
+        beforeTime = System.currentTimeMillis();
+        while(true){
+            repaint();
+            check();
+            timeDiff = System.currentTimeMillis() - beforeTime;
+            sleep = DELAY - timeDiff;
+            if(sleep < 0){
+                sleep = 1;
+            }
+            try{
+                Thread.sleep(sleep);
+            } catch (InterruptedException e){
+                String msg = String.format("Thread interrupted: %s", e.getMessage());
+                JOptionPane.showMessageDialog(this,msg, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            beforeTime = System.currentTimeMillis();
+        }
+    }
+}
